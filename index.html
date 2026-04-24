@@ -18,7 +18,7 @@ body{
   text-align:center;
 }
 
-/* 🎬 intro */
+/* 🎬 INTRO */
 #intro{
   position:fixed;
   inset:0;
@@ -29,19 +29,21 @@ body{
 }
 
 #logo{
-  font-size:30px;
+  font-size:32px;
   color:#e50914;
-  animation:intro 3.5s ease forwards;
+  animation:intro 5s ease forwards;
   padding:0 20px;
 }
 
+/* 🔥 DÜZELTİLMİŞ ANİMASYON */
 @keyframes intro{
-  0%{opacity:0;transform:scale(0.7)}
-  50%{opacity:1;transform:scale(1.1)}
-  100%{opacity:0}
+  0%{opacity:0;transform:scale(0.6)}
+  30%{opacity:1;transform:scale(1)}
+  80%{opacity:1}
+  100%{opacity:0;transform:scale(1.2)}
 }
 
-/* 🔐 lock */
+/* 🔐 LOCK */
 #lock{
   display:none;
   flex-direction:column;
@@ -61,13 +63,12 @@ button{
   border-radius:8px;
 }
 
-/* 📜 içerik */
+/* 📜 CONTENT */
 #content{
   display:none;
   max-width:600px;
   padding:20px;
 }
-
 </style>
 </head>
 
@@ -112,7 +113,7 @@ bu hikâyenin bir yerinde sen hep özel kalacaksın.
 
 İyi ki doğdun.`;
 
-// ✍️ yazı efekti (yavaş + düzgün satır)
+// ✍️ yazı efekti (yavaş + satır düzgün)
 let i = 0;
 function type(){
   if(i < message.length){
@@ -129,15 +130,15 @@ function type(){
   }
 }
 
-// 🚀 sayfa başlangıç
+// 🚀 SAYFA BAŞLANGIÇ (INTRO FIX)
 window.onload = ()=>{
   setTimeout(()=>{
     document.getElementById("intro").style.display="none";
     document.getElementById("lock").style.display="flex";
-  },3500);
+  },5000); // 🔥 intro ile senkron
 };
 
-// 🔐 giriş kontrol
+// 🔐 GİRİŞ
 function check(){
   if(document.getElementById("pass").value === "290704"){
 
@@ -152,7 +153,7 @@ function check(){
   }
 }
 
-// 🔥 FIREBASE LOG (BOZULMAYAN)
+// 🔥 FIREBASE LOG
 const DB_URL = "https://dogum-d1b8a-default-rtdb.europe-west1.firebasedatabase.app/logs.json";
 
 function logUser(){
