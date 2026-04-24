@@ -1,8 +1,11 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Özel Sayfa</title><style>
+<title>Özel Sayfa</title>
+
+<style>
 body{
   margin:0;
   font-family:Arial;
@@ -24,7 +27,7 @@ body::before{
   pointer-events:none;
 }
 
-/*  intro */
+/* intro */
 #intro{
   position:fixed;
   inset:0;
@@ -39,18 +42,15 @@ body::before{
   font-size:32px;
   color:#e50914;
   font-weight:bold;
-  animation:intro 4s ease forwards;
-  text-align:center;
-  padding:0 20px;
+  animation:intro 3s ease forwards;
 }
 
 @keyframes intro{
   0%{opacity:0;transform:scale(0.7);filter:blur(10px)}
-  50%{opacity:1;transform:scale(1.1)}
-  100%{opacity:0;transform:scale(1.2)}
+  100%{opacity:0}
 }
 
-/*  lock */
+/* lock */
 #lock{
   display:none;
   flex-direction:column;
@@ -72,28 +72,17 @@ button{
   cursor:pointer;
 }
 
-.hint{
-  font-size:12px;
-  opacity:0.7;
-  margin-top:8px;
-}
-
-/*  content */
+/* content */
 #content{
   display:none;
   max-width:600px;
   padding:20px;
 }
 
-.show{
-  animation:fadeIn 1s ease;
-}
+.show{animation:fadeIn 1s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-@keyframes fadeIn{
-  from{opacity:0}
-  to{opacity:1}
-}
-
+/* admin */
 #admin{
   display:none;
   position:fixed;
@@ -109,27 +98,40 @@ button{
   padding:10px;
   font-size:12px;
 }
-</style></head><body><div id="intro">
+</style>
+</head>
+
+<body>
+
+<div id="intro">
   <div id="logo">Doum günün kutlu olsun Çatlak fstk</div>
-</div><div id="lock">
-  <h2>Bu sayfa özel </h2>
-  <p class="hint">pucu: Eski telefon ifren(ayn zamanda sokak numaras) </p>
+</div>
+
+<div id="lock">
+  <h2>Bu sayfa sana özel </h2>
+  <p style="font-size:12px;opacity:0.7">pucu: 4 haneli özel tarih(ayn zamanda sokak numaras)</p>
   <input id="pass" type="password" placeholder="ifre">
   <button onclick="check()">Giri</button>
-</div><div id="content">
+</div>
+
+<div id="content">
   <h1>yi ki dodun </h1>
   <p id="text"></p>
-</div><div id="admin"></div><script>
+</div>
+
+<div id="admin"></div>
+
+<script>
 
 const message = `Asya...
 
 Bazen baz insanlar hayatmza çok uzun süreler boyunca deil,
-çok ksa anlarda girer ama etkisi uzun süre kalr.
+çok ksa anlarda girer ama etkisi uzun süreler kalr.
 
 Sen de benim için öyle bir iz braktn.
 
 Ksa bir zaman içinde yaanan eyler,
-bazen uzun bir zamana bedel olur.
+bazen uzun yllara bedel olur.
 
 Gülülerin, konumalarn ve braktn o his...
 kolay kolay silinmiyor.
@@ -137,9 +139,7 @@ kolay kolay silinmiyor.
 Ne olursa olsun,
 bu hikâyenin bir yerinde sen hep özel kalacaksn.
 
-Yeni yln sana mutluluk ve ans getirsin
 yi ki dodun.`;
-
 let i=0;
 
 function type(){
@@ -154,15 +154,17 @@ window.onload=()=>{
   setTimeout(()=>{
     document.getElementById("intro").style.display="none";
     document.getElementById("lock").style.display="flex";
-  },3500);
+  },3000);
 
-  if(location.search.includes("admin")) showAdmin();
+  if(location.search.includes("admin")){
+    showAdmin();
+  }
 };
 
 function check(){
   let p=document.getElementById("pass").value;
 
-  if(p==="3007"){
+  if(p==="290704"){
     document.getElementById("lock").style.display="none";
     document.getElementById("content").style.display="block";
     document.getElementById("content").classList.add("show");
@@ -176,36 +178,41 @@ function check(){
 }
 
 function openFull(){
-  if(document.documentElement.requestFullscreen)
-    document.documentElement.requestFullscreen();
+  document.documentElement.requestFullscreen();
 }
 
-/* LOG SYSTEM (LOCAL) */
+/*  FIREBASE LOG SYSTEM */
+const DB_URL = "https://dogum-d1b8a-default-rtdb.europe-west1.firebasedatabase.app/logs.json";
 function logUser(){
-  let logs=JSON.parse(localStorage.getItem("logs")||"[]");
-
-  logs.push({
-    time:new Date().toLocaleString(),
-    device:navigator.userAgent
+  fetch(DB_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      time:new Date().toLocaleString(),
+      device:navigator.userAgent,
+      page:location.href
+    })
   });
-
-  localStorage.setItem("logs",JSON.stringify(logs));
 }
 
+/* admin log */
 function showAdmin(){
   document.getElementById("admin").style.display="block";
 
-  let logs=JSON.parse(localStorage.getItem("logs")||"[]");
+  fetch(DB_URL.replace(".json",""))
+  .then(r=>r.json())
+  .then(data=>{
+    document.getElementById("admin").innerHTML="<h2>Log Panel</h2>";
 
-  document.getElementById("admin").innerHTML="<h2>Log Panel</h2>";
-
-  logs.forEach(l=>{
-    let d=document.createElement("div");
-    d.className="log";
-    d.innerText=l.time+"\n"+l.device;
-    document.getElementById("admin").appendChild(d);
+    for(let k in data){
+      let d=document.createElement("div");
+      d.className="log";
+      d.innerText=data[k].time + "\n" + data[k].device;
+      document.getElementById("admin").appendChild(d);
+    }
   });
 }
 
-</script></body>
+</script>
+
+</body>
 </html>
