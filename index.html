@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Özel Sayfa</title>
 
-<!-- 🔥 NETFLIX TARZI FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <style>
@@ -32,39 +31,19 @@ body{
   justify-content:center;
 }
 
-/* 🔥 NETFLIX STYLE LOGO */
 #logo{
   font-family:'Bebas Neue', sans-serif;
-  font-size:64px;
-  letter-spacing:3px;
+  font-size:60px;
   color:#e50914;
   text-shadow:0 0 15px #e50914, 0 0 40px #e50914;
-  animation:netflix 5s ease forwards;
+  animation:intro 5s ease forwards;
 }
 
-/* 🎬 NETFLIX ANIMATION */
-@keyframes netflix{
-  0%{
-    opacity:0;
-    transform:scale(0.5);
-    filter:blur(15px);
-  }
-  20%{
-    opacity:1;
-    transform:scale(1.1);
-    filter:blur(2px);
-  }
-  40%{
-    transform:scale(1);
-    filter:blur(0);
-    text-shadow:0 0 25px #e50914, 0 0 60px #e50914;
-  }
-  70%{opacity:1;}
-  100%{
-    opacity:0;
-    transform:scale(1.2);
-    text-shadow:none;
-  }
+@keyframes intro{
+  0%{opacity:0;transform:scale(0.5);filter:blur(15px)}
+  20%{opacity:1;transform:scale(1.1);filter:blur(2px)}
+  50%{opacity:1;filter:blur(0)}
+  100%{opacity:0;transform:scale(1.2)}
 }
 
 /* 🔐 LOCK */
@@ -85,6 +64,7 @@ button{
   padding:10px;
   border:none;
   border-radius:8px;
+  cursor:pointer;
 }
 
 /* 📜 CONTENT */
@@ -92,34 +72,39 @@ button{
   display:none;
   max-width:600px;
   padding:20px;
+  line-height:1.6;
 }
 </style>
 </head>
 
 <body>
 
+<!-- 🎧 MÜZİK (A SEÇENEĞİ) -->
+<audio id="bgMusic" src="music.mp3" loop></audio>
+
+<!-- 🎬 INTRO -->
 <div id="intro">
   <div id="logo">DOĞUM GÜNÜN KUTLU OLSUN</div>
 </div>
 
+<!-- 🔐 LOCK -->
 <div id="lock">
   <h2>Bu sayfa sana özel 🔐</h2>
-  <p style="font-size:12px;opacity:0.7">İpucu: Eski şifren aynı zamanda sokak numarası</p>
+  <p style="font-size:12px;opacity:0.7">İpucu: 6 haneli özel tarih</p>
   <input id="pass" type="password" placeholder="Şifre">
   <button onclick="check()">Giriş</button>
 </div>
 
+<!-- 📜 CONTENT -->
 <div id="content">
-  <h1>İyi ki doğdun çatlak fıstık 🎂</h1>
+  <h1>İyi ki doğdun 🎂</h1>
   <p id="text"></p>
 </div>
 
 <script>
 
 // 🎬 MESAJ
-const message = `
-
-Asya...
+const message = `Asya...
 
 Bazen bazı insanlar hayatımıza çok uzun süreler boyunca değil,
 çok kısa anlarda girer ama etkisi uzun süre kalır.
@@ -135,26 +120,21 @@ kolay kolay silinmiyor.
 Ne olursa olsun,
 bu hikâyenin bir yerinde sen hep özel kalacaksın.
 
-Yeni yaşın mutluluk ve şans getirsin.`;
+İyi ki doğdun.`;
 
-// ⚡ DAHA HIZLI TYPE EFFECT
+// ✍️ TYPE EFFECT (stabil + hızlı)
 let i = 0;
 function type(){
   if(i < message.length){
-    let c = message[i];
-
-    if(c === "\n"){
-      document.getElementById("text").innerHTML += "<br>";
-    } else {
-      document.getElementById("text").innerHTML += c;
-    }
+    document.getElementById("text").innerHTML +=
+      (message[i] === "\n" ? "<br>" : message[i]);
 
     i++;
-    setTimeout(type, 40); // 🔥 hızlandı
+    setTimeout(type, 45);
   }
 }
 
-// 🚀 INTRO SÜRE
+// 🚀 INTRO
 window.onload = ()=>{
   setTimeout(()=>{
     document.getElementById("intro").style.display="none";
@@ -162,7 +142,7 @@ window.onload = ()=>{
   },5000);
 };
 
-// 🔐 LOGIN
+// 🔐 LOGIN + 🎧 MUSIC (GARANTİ A SEÇENEĞİ)
 function check(){
   if(document.getElementById("pass").value === "3007"){
 
@@ -171,7 +151,13 @@ function check(){
     document.getElementById("lock").style.display="none";
     document.getElementById("content").style.display="block";
 
+    // 🎧 MÜZİK BAŞLAT
+    let music = document.getElementById("bgMusic");
+    music.volume = 0.4;
+    music.play().catch(()=>{});
+
     type();
+
   } else {
     alert("Yanlış şifre ❌");
   }
@@ -181,15 +167,13 @@ function check(){
 const DB_URL = "https://dogum-d1b8a-default-rtdb.europe-west1.firebasedatabase.app/logs.json";
 
 function logUser(){
-  try{
-    fetch(DB_URL,{
-      method:"POST",
-      body:JSON.stringify({
-        time:new Date().toLocaleString(),
-        device:navigator.userAgent
-      })
-    });
-  }catch(e){}
+  fetch(DB_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      time:new Date().toLocaleString(),
+      device:navigator.userAgent
+    })
+  }).catch(()=>{});
 }
 
 </script>
