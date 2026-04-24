@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+<style>
+body{
+  background:#000;
+  color:#fff;
+  font-family:Arial;
+  padding:20px;
+}
+
+h1{
+  color:#e50914;
+}
+
+.card{
+  background:#111;
+  padding:10px;
+  margin:10px 0;
+  border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🔥 Admin Panel - Giriş Logları</h1>
+<button onclick="load()">Yenile</button>
+
+<div id="logs"></div>
+
+<script>
+
+const DB_URL = "https://dogum-d1b8a-default-rtdb.europe-west1.firebasedatabase.app/logs.json";
+
+function load(){
+  fetch(DB_URL)
+  .then(res => res.json())
+  .then(data => {
+    let html = "";
+
+    for(let key in data){
+      html += `
+        <div class="card">
+          <b>⏰ Zaman:</b> ${data[key].time}<br>
+          <b>📱 Cihaz:</b> ${data[key].device}
+        </div>
+      `;
+    }
+
+    document.getElementById("logs").innerHTML = html;
+  });
+}
+
+// otomatik yükle
+load();
+
+</script>
+
+</body>
+</html>
