@@ -21,6 +21,23 @@ body{
   font-family:Arial;
 }
 
+/* 🎉 CONFETTI */
+.confetti{
+  position:fixed;
+  width:6px;
+  height:6px;
+  top:-10px;
+  opacity:0.5;
+  animation:fall linear infinite;
+  z-index:-1;
+}
+
+@keyframes fall{
+  to{
+    transform:translateY(110vh) rotate(360deg);
+  }
+}
+
 /* 🎬 INTRO */
 #intro{
   position:fixed;
@@ -74,13 +91,32 @@ button{
   padding:20px;
   line-height:1.6;
 }
+
+/* 🎧 MUSIC BUTTON */
+#musicBtn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  padding:10px 15px;
+  border:none;
+  border-radius:10px;
+  background:#e50914;
+  color:white;
+  cursor:pointer;
+  z-index:9999;
+}
 </style>
 </head>
 
 <body>
 
-<!-- 🎧 MÜZİK (A SEÇENEĞİ) -->
-<audio id="bgMusic" src="music.mp3" loop></audio>
+<!-- 🎉 CONFETTI -->
+<div id="confetti"></div>
+
+<!-- 🎧 MUSIC -->
+<audio id="bgMusic" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
 
 <!-- 🎬 INTRO -->
 <div id="intro">
@@ -90,7 +126,7 @@ button{
 <!-- 🔐 LOCK -->
 <div id="lock">
   <h2>Bu sayfa sana özel 🔐</h2>
-  <p style="font-size:12px;opacity:0.7">İpucu: 6 haneli özel tarih</p>
+  <p style="font-size:12px;opacity:0.7">İpucu: Eski telefon şifren (4 haneli)</p>
   <input id="pass" type="password" placeholder="Şifre">
   <button onclick="check()">Giriş</button>
 </div>
@@ -101,60 +137,108 @@ button{
   <p id="text"></p>
 </div>
 
+<!-- 🎧 MUSIC BUTTON -->
+<button id="musicBtn" onclick="toggleMusic()">🎧 Müziği Başlat</button>
+
 <script>
 
-// 🎬 MESAJ
+// 🎉 CONFETTI (SOFT)
+function createConfetti(){
+  for(let i=0;i<45;i++){
+    let c=document.createElement("div");
+    c.classList.add("confetti");
+
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=randomColor();
+    c.style.animationDuration=(4+Math.random()*4)+"s";
+    c.style.animationDelay=Math.random()*2+"s";
+
+    document.body.appendChild(c);
+  }
+}
+
+function randomColor(){
+  const colors=["#ff4d6d","#ffd166","#06d6a0","#4cc9f0","#f72585","#aaa"];
+  return colors[Math.floor(Math.random()*colors.length)];
+}
+
+createConfetti();
+
+// 💌 GELİŞTİRİLMİŞ MESAJ
 const message = `Asya...
 
-Bazen bazı insanlar hayatımıza çok uzun süreler boyunca değil,
-çok kısa anlarda girer ama etkisi uzun süre kalır.
+Bazen bazı insanlar hayatımıza uzun süre kalmak için değil,
+çok kısa anlarda girip uzun izler bırakmak için gelir.
 
-Sen de benim için öyle bir iz bıraktın.
+Sen de benim hayatımda böyle bir yer bıraktın.
 
-Kısa bir zaman içinde yaşanan şeyler,
-bazen uzun bir zamana bedel olur.
+Bazen bir gülüş, bazen bir konuşma,
+insanın içindeki en sakin yeri bile değiştirebiliyor.
 
-Gülüşlerin, konuşmaların ve bıraktığın o his...
-kolay kolay silinmiyor.
+Seninle geçen o kısa zaman,
+uzun yıllara sığacak kadar değerliydi.
+
+Şimdi geriye baktığımda,
+iyi ki yollarımız kesişmiş diyorum.
 
 Ne olursa olsun,
-bu hikâyenin bir yerinde sen hep özel kalacaksın.
+bu hikâyenin en güzel kısmında sen varsın.
 
-İyi ki doğdun.`;
+İyi ki doğdun...`;
 
-// ✍️ TYPE EFFECT (stabil + hızlı)
-let i = 0;
+// ✍️ TYPE EFFECT
+let i=0;
 function type(){
-  if(i < message.length){
-    document.getElementById("text").innerHTML +=
-      (message[i] === "\n" ? "<br>" : message[i]);
+  if(i<message.length){
+    document.getElementById("text").innerHTML+=
+      (message[i]==="\n"?"<br>":message[i]);
 
     i++;
-    setTimeout(type, 45);
+    setTimeout(type,80);
+  }
+}
+
+// 🖥️ FULLSCREEN
+function openFullscreen(){
+  let e=document.documentElement;
+  if(e.requestFullscreen)e.requestFullscreen();
+}
+
+// 🎧 MUSIC CONTROL
+let musicStarted=false;
+let music=document.getElementById("bgMusic");
+
+function toggleMusic(){
+  if(!musicStarted){
+    music.volume=0.4;
+    music.play().catch(()=>{});
+    musicStarted=true;
+    document.getElementById("musicBtn").innerText="⏸ Müziği Durdur";
+  } else {
+    music.pause();
+    musicStarted=false;
+    document.getElementById("musicBtn").innerText="🎧 Müziği Başlat";
   }
 }
 
 // 🚀 INTRO
-window.onload = ()=>{
+window.onload=()=>{
   setTimeout(()=>{
     document.getElementById("intro").style.display="none";
     document.getElementById("lock").style.display="flex";
   },5000);
 };
 
-// 🔐 LOGIN + 🎧 MUSIC (GARANTİ A SEÇENEĞİ)
+// 🔐 LOGIN
 function check(){
-  if(document.getElementById("pass").value === "3007"){
+  if(document.getElementById("pass").value==="3007"){
 
     logUser();
 
+    openFullscreen();
+
     document.getElementById("lock").style.display="none";
     document.getElementById("content").style.display="block";
-
-    // 🎧 MÜZİK BAŞLAT
-    let music = document.getElementById("bgMusic");
-    music.volume = 0.4;
-    music.play().catch(()=>{});
 
     type();
 
@@ -163,8 +247,8 @@ function check(){
   }
 }
 
-// 🔥 FIREBASE LOG
-const DB_URL = "https://dogum-d1b8a-default-rtdb.europe-west1.firebasedatabase.app/logs.json";
+// 🔥 FIREBASE
+const DB_URL="https://dogum-d1b8a-default-rtdb.europe-west1.firebasedatabase.app/logs.json";
 
 function logUser(){
   fetch(DB_URL,{
