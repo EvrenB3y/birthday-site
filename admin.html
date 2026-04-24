@@ -3,16 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin Panel</title>
+
 <style>
 body{
   background:#000;
   color:#fff;
   font-family:Arial;
-  padding:20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
 }
 
-h1{
-  color:#e50914;
+.box{
+  text-align:center;
+}
+
+input{
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-top:10px;
+}
+
+button{
+  margin-top:10px;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+#panel{
+  display:none;
+  width:80%;
 }
 
 .card{
@@ -26,26 +51,53 @@ h1{
 
 <body>
 
-<h1>🔥 Admin Panel - Giriş Logları</h1>
-<button onclick="load()">Yenile</button>
+<!-- 🔐 LOGIN -->
+<div class="box" id="loginBox">
+  <h2>Admin Girişi</h2>
+  <input id="adminPass" type="password" placeholder="Şifre">
+  <br>
+  <button onclick="login()">Giriş</button>
+</div>
 
-<div id="logs"></div>
+<!-- 📊 PANEL -->
+<div id="panel">
+  <h1 style="color:#e50914;">Giriş Logları</h1>
+  <button onclick="load()">Yenile</button>
+  <div id="logs"></div>
+</div>
 
 <script>
 
+const ADMIN_PASSWORD = "3007"; // 🔥 BURAYI DEĞİŞTİR (senin özel şifren)
+
 const DB_URL = "https://dogum-d1b8a-default-rtdb.europe-west1.firebasedatabase.app/logs.json";
 
+// 🔐 LOGIN
+function login(){
+  let pass = document.getElementById("adminPass").value;
+
+  if(pass === ADMIN_PASSWORD){
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("panel").style.display="block";
+    load();
+  } else {
+    alert("Yanlış şifre ❌");
+  }
+}
+
+// 📊 LOG YÜKLE
 function load(){
   fetch(DB_URL)
   .then(res => res.json())
   .then(data => {
+
     let html = "";
 
     for(let key in data){
       html += `
         <div class="card">
-          <b>⏰ Zaman:</b> ${data[key].time}<br>
-          <b>📱 Cihaz:</b> ${data[key].device}
+          ⏰ ${data[key].time}<br>
+          📱 ${data[key].device}
         </div>
       `;
     }
@@ -53,9 +105,6 @@ function load(){
     document.getElementById("logs").innerHTML = html;
   });
 }
-
-// otomatik yükle
-load();
 
 </script>
 
