@@ -1,214 +1,211 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Özel Sayfa PRO</title>  <style>
-    body{
-      margin:0;
-      font-family:Arial;
-      background:#000;
-      color:#fff;
-      height:100vh;
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      position:relative;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Özel Sayfa</title>
 
-    body::after{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      background:radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.65) 60%, rgba(0,0,0,0.95) 100%);
-      z-index:5;
-    }
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#000;
+  color:#fff;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
 
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:6;
-      opacity:0.07;
-      background-image:url('https://www.transparenttextures.com/patterns/noise.png');
-    }
+/*  sinema efekti */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle, rgba(0,0,0,0.2), rgba(0,0,0,0.9));
+  pointer-events:none;
+}
 
-    #intro{
-      position:fixed;
-      inset:0;
-      background:#000;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:50;
-    }
+/*  intro */
+#intro{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
 
-    #logo{
-      font-size:36px;
-      font-weight:bold;
-      color:#e50914;
-      animation:intro 2.5s ease forwards;
-      text-align:center;
-      padding:0 20px;
-    }
+#logo{
+  font-size:32px;
+  color:#e50914;
+  font-weight:bold;
+  animation:intro 2.5s ease forwards;
+}
 
-    @keyframes intro{
-      0%{opacity:0;transform:scale(0.7);filter:blur(8px)}
-      100%{opacity:0}
-    }
+@keyframes intro{
+  0%{opacity:0;transform:scale(0.7);filter:blur(10px)}
+  50%{opacity:1;transform:scale(1.1)}
+  100%{opacity:0;transform:scale(1.2)}
+}
 
-    #lockScreen{
-      position:fixed;
-      inset:0;
-      background:#000;
-      display:none;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      z-index:20;
-    }
+/*  lock */
+#lock{
+  display:none;
+  flex-direction:column;
+}
 
-    input{
-      padding:12px;
-      border-radius:10px;
-      border:none;
-      text-align:center;
-      margin-top:10px;
-      outline:none;
-    }
+input{
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  text-align:center;
+  margin-top:10px;
+}
 
-    button{
-      margin-top:10px;
-      padding:10px 15px;
-      border:none;
-      border-radius:10px;
-      cursor:pointer;
-    }
+button{
+  margin-top:10px;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
 
-    .box{
-      max-width:650px;
-      padding:25px;
-      z-index:10;
-      position:relative;
-    }
+/*  content */
+#content{
+  display:none;
+  max-width:600px;
+  padding:20px;
+}
 
-    .hidden{display:none}
-    .show{animation:fadeIn 1s ease}
+.show{
+  animation:fadeIn 1s ease;
+}
 
-    @keyframes fadeIn{
-      from{opacity:0}
-      to{opacity:1}
-    }
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
 
-    #adminPanel{
-      display:none;
-      position:fixed;
-      inset:0;
-      background:#111;
-      overflow:auto;
-      padding:20px;
-      z-index:999;
-    }
+/*  admin */
+#admin{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#111;
+  overflow:auto;
+  padding:20px;
+}
+.log{
+  background:#222;
+  margin:10px 0;
+  padding:10px;
+  font-size:12px;
+}
+</style>
+</head>
 
-    .log{
-      background:#222;
-      padding:10px;
-      margin:10px 0;
-      border-radius:8px;
-      font-size:12px;
-    }
-  </style></head>
-<body><div id="intro">
+<body>
+
+<div id="intro">
   <div id="logo">Doum günün kutlu olsun</div>
-</div><div id="lockScreen">
+</div>
+
+<div id="lock">
   <h2>Bu sayfa özel </h2>
-  <p>pucu: 6 haneli tarih</p>
-  <input type="password" id="password" placeholder="ifre" />
-  <button onclick="login()">Giri</button>
-</div><div class="box hidden" id="content">
+  <input id="pass" type="password" placeholder="ifre">
+  <button onclick="check()">Giri</button>
+</div>
+
+<div id="content">
   <h1>yi ki dodun </h1>
-  <p id="story"></p>
-</div><div id="adminPanel">
-  <h2>Admin Log Panel</h2>
-  <div id="logs"></div>
-</div><script>
-const text = `Asya...\n\nKsa bir hikaye gibi ama etkili bir iz braktn.\n\nyi ki dodun.`;
+  <p id="text"></p>
+</div>
 
-let i = 0;
+<div id="admin"></div>
 
-function typeWriter(){
-  if(i < text.length){
-    document.getElementById("story").innerHTML += text.charAt(i);
+<script>
+
+const message = `Asya...
+
+Baz insanlar ksa zamanda iz brakr.
+
+yi ki dodun.`;
+
+let i=0;
+
+function type(){
+  if(i < message.length){
+    document.getElementById("text").innerHTML += message[i];
     i++;
-    setTimeout(typeWriter,30);
+    setTimeout(type,40);
   }
 }
 
-window.onload = function(){
+window.onload = ()=>{
   setTimeout(()=>{
     document.getElementById("intro").style.display="none";
-    document.getElementById("lockScreen").style.display="flex";
-  },2000);
+    document.getElementById("lock").style.display="flex";
+  },2500);
 
-  if(window.location.search.includes("admin")){
-    document.getElementById("adminPanel").style.display="block";
-    loadLogs();
+  if(location.search.includes("admin")){
+    showAdmin();
   }
 };
 
-function login(){
-  const pass = document.getElementById("password").value;
+function check(){
+  let p = document.getElementById("pass").value;
 
-  if(pass === "290704"){
-    document.getElementById("lockScreen").style.display="none";
-    document.getElementById("content").classList.remove("hidden");
+  if(p === "290704"){
+    document.getElementById("lock").style.display="none";
+    document.getElementById("content").style.display="block";
     document.getElementById("content").classList.add("show");
 
-    typeWriter();
+    type();
     logUser();
-    openFullscreen();
+    openFull();
   } else {
     alert("Yanl ifre ");
   }
 }
 
-function openFullscreen(){
-  const e=document.documentElement;
-  if(e.requestFullscreen) e.requestFullscreen();
+function openFull(){
+  if(document.documentElement.requestFullscreen){
+    document.documentElement.requestFullscreen();
+  }
 }
 
-/* LOG SYSTEM */
-const DB_URL = "https://console.firebase.google.com/u/0/project/dogum-d1b8a/database/dogum-d1b8a-default-rtdb/data/~2F";
-
+/*  LOCAL LOG SYSTEM */
 function logUser(){
-  const data = {
-    time: new Date().toISOString(),
-    device: navigator.userAgent
-  };
+  let logs = JSON.parse(localStorage.getItem("logs") || "[]");
 
-  fetch(DB_URL, {
-    method:"POST",
-    body: JSON.stringify(data)
+  logs.push({
+    time: new Date().toLocaleString(),
+    device: navigator.userAgent
+  });
+
+  localStorage.setItem("logs", JSON.stringify(logs));
+}
+
+function showAdmin(){
+  document.getElementById("admin").style.display="block";
+
+  let logs = JSON.parse(localStorage.getItem("logs") || "[]");
+
+  document.getElementById("admin").innerHTML = "<h2>Log Panel</h2>";
+
+  logs.forEach(l=>{
+    let div = document.createElement("div");
+    div.className="log";
+    div.innerText = l.time + "\n" + l.device;
+    document.getElementById("admin").appendChild(div);
   });
 }
 
-function loadLogs(){
-  fetch(DB_URL)
-    .then(r=>r.json())
-    .then(data=>{
-      const logs=document.getElementById("logs");
-      logs.innerHTML="";
+</script>
 
-      for(let k in data){
-        const div=document.createElement("div");
-        div.className="log";
-        div.innerText = `Zaman: ${data[k].time}\nCihaz: ${data[k].device}`;
-        logs.appendChild(div);
-      }
-    });
-}
-</script></body>
+</body>
 </html>
