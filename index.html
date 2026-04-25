@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 
+<!-- 📱 iPhone zoom + viewport fix -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Özel Sayfa</title>
@@ -24,6 +25,21 @@ body{
   -webkit-text-size-adjust:100%;
 }
 
+/* 🎉 CONFETTI */
+.confetti{
+  position:fixed;
+  width:6px;
+  height:6px;
+  top:-10px;
+  opacity:0.5;
+  animation:fall linear infinite;
+  z-index:-1;
+}
+
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg);}
+}
+
 /* 🎬 INTRO */
 #intro{
   position:fixed;
@@ -34,6 +50,7 @@ body{
   justify-content:center;
 }
 
+/* 📱 FIXED LOGO (iPhone taşma çözümü) */
 #logo{
   font-family:'Bebas Neue', sans-serif;
   font-size:clamp(28px, 8vw, 60px);
@@ -77,25 +94,19 @@ button{
 #content{
   display:none;
   max-width:600px;
-  padding:80px 20px 20px 20px;
+  padding:20px;
   line-height:1.7;
   word-break:break-word;
   -webkit-font-smoothing:antialiased;
   transition:all 2.5s ease;
 }
 
-/* 💌 SMOOTH FLOW TEXT */
-.line{
-  opacity:0;
-  transform:translateY(15px);
-  animation:fadeUp 0.8s ease forwards;
-}
-
-@keyframes fadeUp{
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
+/* 💌 TEXT */
+#text{
+  font-size:16px;
+  letter-spacing:0.2px;
+  line-height:1.6;
+  white-space:pre-wrap;
 }
 
 /* 🎥 END EFFECT */
@@ -103,15 +114,14 @@ button{
   transform:scale(1.15);
   filter:blur(6px);
   opacity:0.4;
-  transition:all 2.5s ease;
 }
 
 /* 🎧 MUSIC BUTTON */
 #musicBtn{
   position:fixed;
-  bottom:30px;
+  bottom:20px;
   right:20px;
-  z-index:999;
+  z-index:10;
   padding:10px 15px;
   border:none;
   border-radius:10px;
@@ -136,7 +146,7 @@ button{
   z-index:20;
 }
 
-/* 🌑 FADE BLACK */
+/* 🌑 FINAL BLACK SCREEN */
 #fadeBlack{
   position:fixed;
   inset:0;
@@ -151,7 +161,9 @@ button{
 
 <body>
 
-<audio id="bgMusic" loop>
+<div id="confetti"></div>
+
+<audio id="bgMusic" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
@@ -161,18 +173,35 @@ button{
 
 <div id="lock">
   <h2>Bu sayfa sana özel 🔐</h2>
-  <p style="font-size:12px;opacity:0.7">İpucu: 4 haneli eski şifre</p>
+  <p style="font-size:12px;opacity:0.7">İpucu: Eski telefon şifren aynı zamanda sokak numarası (4 haneli)</p>
   <input id="pass" type="password" placeholder="Şifre">
   <button onclick="check()">Giriş</button>
 </div>
 
 <div id="content">
   <h1>İyi ki doğdun 🎂</h1>
-  <div id="text"></div>
+  <p id="text"></p>
 </div>
 
 <div id="ending">
-  <h2>Sonsuza kadar aklımda kalacaksın...</h2>
+  
+  <div>
+    <h2 style="margin-bottom:18px;">
+      Doğum günün kutlu olsun
+    </h2>
+
+    <p style="
+      font-size:18px;
+      opacity:0.85;
+      line-height:1.4;
+      margin:0;
+    ">
+      <span style="font-size:20px; font-weight:bold;">
+        Çatlak fıstık...
+      </span>
+    </p>
+  </div>
+
 </div>
 
 <div id="fadeBlack"></div>
@@ -180,6 +209,28 @@ button{
 <button id="musicBtn" onclick="toggleMusic()">🎧 Müziği Başlat</button>
 
 <script>
+
+// 🎉 CONFETTI
+function createConfetti(){
+  for(let i=0;i<45;i++){
+    let c=document.createElement("div");
+    c.classList.add("confetti");
+
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=randomColor();
+    c.style.animationDuration=(4+Math.random()*4)+"s";
+    c.style.animationDelay=Math.random()*2+"s";
+
+    document.body.appendChild(c);
+  }
+}
+
+function randomColor(){
+  const colors=["#ff4d6d","#ffd166","#06d6a0","#4cc9f0","#f72585","#aaa"];
+  return colors[Math.floor(Math.random()*colors.length)];
+}
+
+createConfetti();
 
 // 💌 MESSAGE
 const message = `Asya...
@@ -196,33 +247,29 @@ insanın içindeki en ufak yeri bile değiştirebiliyor.
 Seninle geçen o kısa zaman,
 uzun yıllara sığacak kadar değerliydi.
 
-Bir daha seni rahatsız etmeyeceğimi söylemiştim ama doğum günün senin için önemli olduğu için yazmak istedim. Rahatsız ettiysem gerçekten özür dilerim.
+Bir daha seni rahatsız etmeyeceğimi söylemiştim ama doğum günün senin için önemli. Rahatsız ettiysem özür dilerim.
+`;
 
-İyi ki doğdun çatlak fıstık...`;
-
-let lines = message.split("\n");
-let index = 0;
-
+// ✍️ TYPE EFFECT
+let i = 0;
 let textEl = document.getElementById("text");
 
-// ✨ SMOOTH FLOW ANIMATION
 function type(){
-  if(index < lines.length){
-    let line = document.createElement("div");
-    line.className = "line";
-    line.innerHTML = lines[index];
-
-    textEl.appendChild(line);
-
-    index++;
-
-    setTimeout(type, 600); // akış hızı
+  if(i < message.length){
+    let char = message[i];
+    if(char === "\n"){
+      textEl.innerHTML += "<br>";
+    } else {
+      textEl.innerHTML += char;
+    }
+    i++;
+    setTimeout(type,60);
   } else {
     setTimeout(showEnding, 2500);
   }
 }
 
-// 🎬 END EFFECT
+// 🎬 ENDING
 function showEnding(){
   const end = document.getElementById("ending");
   const content = document.getElementById("content");
@@ -230,36 +277,42 @@ function showEnding(){
 
   content.classList.add("end-effect");
 
-  setTimeout(()=>{ end.style.opacity = 1; }, 800);
+  setTimeout(()=>{
+    end.style.opacity = 1;
+  },800);
 
-  setTimeout(()=>{ fade.style.opacity = 1; }, 2500);
+  setTimeout(()=>{
+    fade.style.opacity = 1;
+  },2500);
+}
+
+// 🖥️ FULLSCREEN (iOS SAFE)
+function openFullscreen(){
+  let elem=document.documentElement;
+
+  const request = elem.requestFullscreen ||
+                  elem.webkitRequestFullscreen ||
+                  elem.msRequestFullscreen;
+
+  if(request){
+    request.call(elem).catch(()=>{});
+  }
 }
 
 // 🎧 MUSIC
 let music=document.getElementById("bgMusic");
-let playing=false;
+let musicStarted=false;
 
 function toggleMusic(){
-  if(!playing){
+  if(!musicStarted){
     music.volume=0.4;
     music.play().catch(()=>{});
-    playing=true;
+    musicStarted=true;
     document.getElementById("musicBtn").innerText="⏸ Müziği Durdur";
   } else {
     music.pause();
-    playing=false;
+    musicStarted=false;
     document.getElementById("musicBtn").innerText="🎧 Müziği Başlat";
-  }
-}
-
-// 🔐 LOGIN
-function check(){
-  if(document.getElementById("pass").value==="3007"){
-    document.getElementById("lock").style.display="none";
-    document.getElementById("content").style.display="block";
-    type();
-  } else {
-    alert("Yanlış şifre ❌");
   }
 }
 
@@ -270,6 +323,39 @@ window.onload=()=>{
     document.getElementById("lock").style.display="flex";
   },5000);
 };
+
+// 🔐 LOGIN
+function check(){
+  if(document.getElementById("pass").value==="3007"){
+
+    logUser();
+    openFullscreen();
+
+    document.getElementById("lock").style.display="none";
+    document.getElementById("content").style.display="block";
+
+    type();
+
+  } else {
+    alert("Yanlış şifre ❌");
+  }
+}
+
+// 📊 FIREBASE LOG
+const DB_URL="https://dogum-d1b8a-default-rtdb.europe-west1.firebasedatabase.app/logs.json";
+
+function logUser(){
+  fetch(DB_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      time:new Date().toLocaleString(),
+      device:navigator.userAgent,
+      language:navigator.language,
+      screen:`${window.innerWidth}x${window.innerHeight}`,
+      platform:navigator.platform
+    })
+  }).catch(()=>{});
+}
 
 </script>
 
