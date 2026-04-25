@@ -2,7 +2,10 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 📱 ZOOM KAPATMA (iPhone FIX) -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>Özel Sayfa</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -19,6 +22,12 @@ body{
   text-align:center;
   overflow:hidden;
   font-family:Arial;
+}
+
+/* 🚫 TOUCH ZOOM ENGEL */
+html, body{
+  touch-action:none;
+  overscroll-behavior:none;
 }
 
 /* 🎉 CONFETTI */
@@ -82,24 +91,27 @@ button{
   cursor:pointer;
 }
 
-/* 📜 CONTENT */
+/* 📜 CONTENT (iPHONE FIX) */
 #content{
   display:none;
   max-width:600px;
   padding:20px;
-  line-height:1.6;
+  line-height:1.7;
+  word-break:break-word;
+  -webkit-font-smoothing: antialiased;
   transition:all 2.5s ease;
 }
 
 /* 💌 MESSAGE */
 #text{
   font-size:16px;
-  letter-spacing:0.3px;
-  line-height:1.4;
+  letter-spacing:0.2px;
+  line-height:1.6;
+  white-space:pre-wrap;
   text-shadow:0 0 10px rgba(255,255,255,0.08);
 }
 
-/* 🎥 CINEMATIC EFFECT */
+/* 🎥 END EFFECT */
 #content.end-effect{
   transform:scale(1.15);
   filter:blur(6px);
@@ -213,14 +225,12 @@ Bazen bazı insanlar hayatımıza uzun süre kalmak için değil,
 
 Sen de benim hayatımda böyle bir yer bıraktın.
 
-Gülüşünü hatırlamak,
-Doya doya sarılmayı hatırlamak,
+Bazen bir gülüş,
+bazen bir konuşma,
 insanın içindeki en sakin yeri bile değiştirebiliyor.
 
 Seninle geçen o kısa zaman,
 uzun yıllara sığacak kadar değerliydi.
-
-Bir daha seni rahatsız etmeyeceğim demiştim ama doğum günü senin için önemli olduğu için yazmak istedim. Rahatsız ettiysem özür dilerim.
 
 İyi ki doğdun...`;
 
@@ -243,24 +253,21 @@ function type(){
   }
 }
 
-// 🎬 ENDING + FULL CINEMATIC
+// 🎬 ENDING EFFECT
 function showEnding(){
   const end = document.getElementById("ending");
   const content = document.getElementById("content");
   const fade = document.getElementById("fadeBlack");
 
-  // zoom + blur
   content.classList.add("end-effect");
 
-  // yazı
   setTimeout(()=>{
     end.style.opacity = 1;
-  }, 800);
+  },800);
 
-  // tam kararma
   setTimeout(()=>{
     fade.style.opacity = 1;
-  }, 2500);
+  },2500);
 }
 
 // 🖥️ FULLSCREEN
