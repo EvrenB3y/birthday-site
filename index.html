@@ -88,6 +88,7 @@ button{
   max-width:600px;
   padding:20px;
   line-height:1.6;
+  transition:all 2.5s ease;
 }
 
 /* 💌 MESSAGE */
@@ -96,6 +97,13 @@ button{
   letter-spacing:0.3px;
   line-height:1.4;
   text-shadow:0 0 10px rgba(255,255,255,0.08);
+}
+
+/* 🎥 CINEMATIC EFFECT */
+#content.end-effect{
+  transform:scale(1.15);
+  filter:blur(6px);
+  opacity:0.4;
 }
 
 /* 🎧 MUSIC BUTTON */
@@ -123,28 +131,36 @@ button{
   justify-content:center;
   font-size:22px;
   opacity:0;
+  pointer-events:none;
   transition:opacity 2s ease;
   z-index:20;
+}
+
+/* 🌑 FINAL BLACK */
+#fadeBlack{
+  position:fixed;
+  inset:0;
+  background:#000;
+  opacity:0;
+  transition:opacity 2.5s ease;
+  pointer-events:none;
+  z-index:30;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🎉 CONFETTI -->
 <div id="confetti"></div>
 
-<!-- 🎧 MUSIC -->
 <audio id="bgMusic" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- 🎬 INTRO -->
 <div id="intro">
   <div id="logo">DOĞUM GÜNÜN KUTLU OLSUN</div>
 </div>
 
-<!-- 🔐 LOCK -->
 <div id="lock">
   <h2>Bu sayfa sana özel 🔐</h2>
   <p style="font-size:12px;opacity:0.7">İpucu: Eski telefon şifren (4 haneli)</p>
@@ -152,18 +168,17 @@ button{
   <button onclick="check()">Giriş</button>
 </div>
 
-<!-- 📜 CONTENT -->
 <div id="content">
   <h1>İyi ki doğdun 🎂</h1>
   <p id="text"></p>
 </div>
 
-<!-- 🎬 ENDING -->
 <div id="ending">
   <h2>Sonsuza kadar aklımda kalacaksın...</h2>
 </div>
 
-<!-- 🎧 MUSIC BUTTON -->
+<div id="fadeBlack"></div>
+
 <button id="musicBtn" onclick="toggleMusic()">🎧 Müziği Başlat</button>
 
 <script>
@@ -207,30 +222,43 @@ uzun yıllara sığacak kadar değerliydi.
 
 İyi ki doğdun...`;
 
-// ✍️ TYPE EFFECT
+// ✍️ TYPE
 let i = 0;
 let textEl = document.getElementById("text");
 
 function type(){
   if(i < message.length){
     let char = message[i];
-
     if(char === "\n"){
       textEl.innerHTML += "<br>";
     } else {
       textEl.innerHTML += char;
     }
-
     i++;
     setTimeout(type,60);
   } else {
-    setTimeout(showEnding, 2500); // 🎬 kapanış
+    setTimeout(showEnding, 2500);
   }
 }
 
-// 🎬 ENDING
+// 🎬 ENDING + FULL CINEMATIC
 function showEnding(){
-  document.getElementById("ending").style.opacity = 1;
+  const end = document.getElementById("ending");
+  const content = document.getElementById("content");
+  const fade = document.getElementById("fadeBlack");
+
+  // zoom + blur
+  content.classList.add("end-effect");
+
+  // yazı
+  setTimeout(()=>{
+    end.style.opacity = 1;
+  }, 800);
+
+  // tam kararma
+  setTimeout(()=>{
+    fade.style.opacity = 1;
+  }, 2500);
 }
 
 // 🖥️ FULLSCREEN
